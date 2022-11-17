@@ -1,0 +1,54 @@
+version: '3.9'
+
+services:
+    web:
+        build:
+            context: .
+            dockerfile: ./docker/php-apache/Dockerfile
+        ports:
+            - 8080:80
+        volumes:
+            - ./src/universe-backend:/var/www/app
+            - vendor-store:/var/www/app/vendor
+            - ./docker/php-apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+            - ./docker/php-apache/php.ini:/usr/local/etc/php/php.ini
+            - ./docker/resolv.conf:/etc/resolv.conf
+            - ./docker/id_ed25519:/root/.ssh/id_ed25519
+            - ./docker/id_ed25519.pub:/root/.ssh/id_ed25519.pub
+            # - ./docker/config:/root/.ssh/config
+        working_dir: /var/www/app
+        extra_hosts:
+            - host.docker.internal:host-gateway
+        depends_on:
+            - mysql
+
+    frontend:
+        build: 
+            context: .
+            dockerfile: ./docker/next/Dockerfile
+        ports:
+            - 3001:3000
+            - 6006:6006
+        volumes:
+            - ./src/universe-frontend:/workspace
+            - node-modules-store:/workspace/node_modules
+            - ./docker/next/package.json:/package.json
+            - ./docker/resolv.conf:/etc/resolv.conf
+            - ./docker/id_ed25519:/root/.ssh/id_ed25519
+            - ./docker/id_ed25519.pub:/root/.ssh/id_ed25519.pub
+            # - ./docker/config:/root/.ssh/config
+        working_dir: /workspace
+        tty: true
+
+    mysql:
+        build: ./docker/mysql
+        ports:
+            - 3307:3306
+        volumes:
+            - mysql-store:/var/lib/mysql
+
+volumes:
+  mysql-store:
+  mysql-test-store:
+  node-modules-store:
+  vendor-store:
