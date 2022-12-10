@@ -6,7 +6,7 @@ services:
             context: .
             dockerfile: ./docker/php-apache/Dockerfile
         ports:
-            - 8080:80
+            - 8081:80
         volumes:
             - ./src/universe-backend:/var/www/app
             - vendor-store:/var/www/app/vendor
