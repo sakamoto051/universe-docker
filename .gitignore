@@ -2,3 +2,4 @@ src/universe-backend
 src/universe-frontend
 docker/id_ed25519
 docker/id_ed25519.pub
+aws

@@ -1,4 +1,4 @@
-FROM node:16.14
+FROM node:16.13
 
 # コマンド実行
 RUN apt-get update && \
@@ -7,8 +7,10 @@ RUN apt-get update && \
     yarn global add create-react-app
 
 WORKDIR /workspace
-COPY src/universe-frontend /workspace
+COPY ./ /workspace
 RUN npm init -y
 RUN npm install
-# RUN npx create-react-app ./
-# RUN yarn install
+RUN npm run build
+EXPOSE 80
+
+CMD ["npm", "start", "-p", "80"]
